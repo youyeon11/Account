@@ -1,12 +1,14 @@
 package com.example.account.controller;
 
 import com.example.account.domain.Account;
+import com.example.account.dto.AccountDto;
+import com.example.account.dto.CreateAccount;
 import com.example.account.service.AccountService;
 import com.example.account.service.RedisTestService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,15 +16,27 @@ public class AccountController {
     private final AccountService accountService;
     private final RedisTestService redisTestService;
 
+    @PostMapping("/account")
+    public CreateAccount.Response createAccount( // CreateAccount class의 Response 응답에 대한 것으로 저장
+            @RequestBody @Valid CreateAccount.Request request // userId와 initialBalance를 요청 인자로 받는 request를 설정
+    ) {
+        AccountDto accountDto = accountService.createAccount( // 필요한 요청 param들 import
+                request.getUserId(),
+                request.getInitialBalance()
+        );
+
+        // 최종적인 return 유형: CreateAccount.Response
+        return CreateAccount.Response.from(
+                accountService.createAccount(
+                        request.getUserId(),
+                        request.getInitialBalance()
+                )
+        );
+    }
+
     @GetMapping("/get-lock")
     public String getLock() {
         return redisTestService.getLock();
-    }
-
-    @GetMapping("/create-account")
-    public String createAccount() {
-        accountService.createAccount();
-        return "success";
     }
 
     @GetMapping("/account/{id}")
