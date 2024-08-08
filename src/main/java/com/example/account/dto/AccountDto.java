@@ -26,7 +26,7 @@ public class AccountDto {
                 .userId(account.getAccountUser().getId())
                 .accountNumber(account.getAccountNumber())
                 .registeredAt(account.getRegisteredAt())
-                .unRegisteredAt(account.getUnregisteredAt())
+                .unRegisteredAt(account.getUnRegisteredAt())
                 .build(); // Account -> AccountDto로 변경하고 싶을 때 이 방식을 사용
     }
 }

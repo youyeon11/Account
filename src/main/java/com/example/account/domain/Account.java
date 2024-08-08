@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@Setter // 이거 쓰면 굳이 this.... 이런 거 안 해도 됨
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,7 +33,7 @@ public class Account {
     private Long balance;
 
     private LocalDateTime registeredAt;
-    private LocalDateTime unregisteredAt;
+    private LocalDateTime unRegisteredAt;
 
     @CreatedDate
     private LocalDateTime createdAt;
