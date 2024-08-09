@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.account.type.AccountStatus.IN_USE;
 
@@ -79,10 +82,28 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
         return AccountDto.fromEntity(account);
     }
 
+
+    public List<AccountDto> getAccountsByUserId(Long userId) {
+        // 계좌 확인 API
+        AccountUser accountUser = accountUserRepository.findById(userId)
+                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
+
+        List<Account> accounts = accountRepository.findByAccountUser(accountUser);
+
+        return accounts.stream()
+                .map(AccountDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
     // 정합성 검정 (= 예외에 대한 처리들)
     private void validateDeleteAccount(AccountUser accountUser, Account account) {
         if (accountUser.getId() != account.getAccountUser().getId()) {
             throw new AccountException(ErrorCode.USER_ACCOUNT_UN_MATCH);
+        }
+
+        if (accountRepository.countByAccountUser(accountUser) == 10) {
+            throw new AccountException(ErrorCode.MAX_ACCOUNT_PER_USER_10);
         }
 
         if (account.getAccountStatus() == AccountStatus.UNREGISTERED) {
