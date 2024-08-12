@@ -25,6 +25,7 @@ public class AccountDto {
         return AccountDto.builder() // account에서의 특징들 전부 가져오기 가능
                 .userId(account.getAccountUser().getId())
                 .accountNumber(account.getAccountNumber())
+                .balance(account.getBalance())
                 .registeredAt(account.getRegisteredAt())
                 .unRegisteredAt(account.getUnRegisteredAt())
                 .build(); // Account -> AccountDto로 변경하고 싶을 때 이 방식을 사용

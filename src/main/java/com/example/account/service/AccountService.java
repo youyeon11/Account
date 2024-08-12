@@ -83,6 +83,7 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
     }
 
 
+    @Transactional
     public List<AccountDto> getAccountsByUserId(Long userId) {
         // 계좌 확인 API
         AccountUser accountUser = accountUserRepository.findById(userId)

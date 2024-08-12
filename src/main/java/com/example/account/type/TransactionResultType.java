@@ -1,2 +1,6 @@
-package com.example.account.type;public enum TransactionResultType {
+package com.example.account.type;
+
+public enum TransactionResultType {
+    S,
+    F
 }
