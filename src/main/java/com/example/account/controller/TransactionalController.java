@@ -7,7 +7,11 @@ package com.example.account.controller;
 3. 거래 확인
  */
 
+import com.example.account.dto.TransactionDto;
 import com.example.account.dto.UseBalance;
+import com.example.account.exception.AccountException;
+import com.example.account.repository.TransactionRepository;
+import com.example.account.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -23,12 +27,27 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class TransactionalController {
 
+    private final TransactionService transactionService;
+    private final TransactionRepository transactionRepository;
+
     @PostMapping("/transaction/use")
     public UseBalance.Response useBalance(
-            @Valid @RequestBody UseBalance.Request request
+            @Valid @RequestBody UseBalance.Request request // 최초 validation을 실시
     ) {
+        try {
+            return UseBalance.Response.from(transactionService.useBalance(request.getUserId(),
+                    request.getAccountNumber(), request.getAmount())
+            );
+        } catch (AccountException e) {
+            // 비즈니스적으로 발생한 에러에 대하여 처리하기 위한 코드
+            log.error("Failed to use balance. "); // 에러에 대한 로그(기록)
 
+            transactionService.saveFailedUseTransaction(
+                    request.getAccountNumber(),
+                    request.getAmount()
+            );
 
-
+            throw e; // 밖으로 던져주기
+        }
     }
 }

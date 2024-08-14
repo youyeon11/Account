@@ -36,13 +36,20 @@ public class UseBalance { // CreatAccount와 상당히 비슷한 구조로 작�
     @Builder
     public static class Response {
         private String accountNumber;
-        private TransactionResultType transactionType;
-        private String TransactionId;
+        private TransactionResultType transactionResult;
+        private String transactionId;
         private Long amount;
         private LocalDateTime transactedAt;
 
-        public static UseBalance.Response from(AccountDto accountDto) {
-            }
+        public static UseBalance.Response from(TransactionDto transactionDto) {
+            return Response.builder()
+                    .accountNumber(transactionDto.getAccountNumber())
+                    .transactionResult(transactionDto.getTransactionResultType())
+                    .transactionId(transactionDto.getTransactionId())
+                    .amount(transactionDto.getAmount())
+                    .transactedAt(transactionDto.getTransactedAt())
+                    .build();
+        }
     }
 
 }

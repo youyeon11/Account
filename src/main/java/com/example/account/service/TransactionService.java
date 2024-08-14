@@ -2,19 +2,25 @@ package com.example.account.service;
 
 import com.example.account.domain.Account;
 import com.example.account.domain.AccountUser;
+import com.example.account.domain.Transaction;
 import com.example.account.dto.TransactionDto;
 import com.example.account.exception.AccountException;
 import com.example.account.repository.AccountRepository;
 import com.example.account.repository.AccountUserRepository;
 import com.example.account.repository.TransactionRepository;
-import com.example.account.type.AccountStatus;
-import com.example.account.type.ErrorCode;
+import com.example.account.type.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
+
+import static com.example.account.type.TransactionResultType.F;
+import static com.example.account.type.TransactionResultType.S;
+import static com.example.account.type.TransactionType.USE;
 
 
 @Slf4j
@@ -39,6 +45,10 @@ public class TransactionService {
 
         // 정합성 검정
         validateUseBalance(user, account, amount);
+
+        account.useBalance(amount);
+
+        return TransactionDto.fromEntity(saveAndGetTransaction(S, account, amount)); // 중복으로 적는 것보다 아예 Repository save를 param으로 사용
     }
 
     public void validateUseBalance(AccountUser user, Account account, Long amount) {
@@ -51,5 +61,27 @@ public class TransactionService {
         if (account.getBalance() < amount) {
             throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
         }
+    }
+
+    @Transactional
+    public void saveFailedUseTransaction(String accountNumber, Long amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)  // 계좌번호 확인
+                .orElseThrow(() -> new AccountException(ErrorCode.ACCOUNT_NOT_FOUND)); // 다르면 아예 그냥 에러문띄우기
+
+        saveAndGetTransaction(F, account, amount);
+    }
+
+    private Transaction saveAndGetTransaction(TransactionResultType transactionResultType, Account account, Long amount) {
+        return transactionRepository.save(
+                Transaction.builder()
+                        .transactionType(USE) // 아예 static 상수를 가져와 사용
+                        .transactionResultType(transactionResultType)
+                        .account(account)
+                        .amount(amount)
+                        .balanceSnapshot(account.getBalance())
+                        .transactionId(UUID.randomUUID().toString().replace("-", ""))
+                        .transactedAt(LocalDateTime.now())
+                        .build()
+        );
     }
 }
