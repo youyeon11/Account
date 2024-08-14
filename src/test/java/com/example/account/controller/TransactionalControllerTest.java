@@ -9,6 +9,7 @@ import com.example.account.type.AccountStatus;
 import com.example.account.service.AccountService;
 import com.example.account.service.RedisTestService;
 import com.example.account.type.TransactionResultType;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ class TransactionalControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void successUseBalance() {
+    void successUseBalance() throws Exception {
         // given
         given(transactionService.useBalance(anyLong(), anyString(), anyLong()))
                 .willReturn(TransactionDto.builder()
@@ -57,14 +58,17 @@ class TransactionalControllerTest {
 
         // then
         mockMvc.perform(post("/transaction/use")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(
-                        new UseBalance.Request(1L, "2000000000", 3000L)
-                ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new UseBalance.Request(1L, "2000000000", 3000L)
+                        ))
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountNumber").value("1000000000"))
                 .andExpect(jsonPath("$.transactionResult").value("S"))
                 .andExpect(jsonPath("$.transactionId").value("transactionId"))
                 .andExpect(jsonPath("$.amount").value(12345));
+    }
+
+
 }

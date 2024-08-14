@@ -7,6 +7,7 @@ package com.example.account.controller;
 3. 거래 확인
  */
 
+import com.example.account.dto.CancelBalance;
 import com.example.account.dto.TransactionDto;
 import com.example.account.dto.UseBalance;
 import com.example.account.exception.AccountException;
@@ -43,6 +44,29 @@ public class TransactionalController {
             log.error("Failed to use balance. "); // 에러에 대한 로그(기록)
 
             transactionService.saveFailedUseTransaction(
+                    request.getAccountNumber(),
+                    request.getAmount()
+            );
+
+            throw e; // 밖으로 던져주기
+        }
+    }
+
+    public CancelBalance.Response cancelBalance(
+            @Valid @RequestBody CancelBalance.Request request // 최초 validation을 실시
+    ) {
+        try {
+            return CancelBalance.Response.from(
+                    transactionService.cancelBalance(
+                    request.getTransactionId(),
+                    request.getAccountNumber(), request.getAmount()
+                    )
+            );
+        } catch (AccountException e) {
+            // 비즈니스적으로 발생한 에러에 대하여 처리하기 위한 코드
+            log.error("Failed to cancel balance. "); // 에러에 대한 로그(기록)
+
+            transactionService.saveFailedCancelTransaction(
                     request.getAccountNumber(),
                     request.getAmount()
             );

@@ -12,5 +12,6 @@ public interface TransactionRepository
         extends JpaRepository<Transaction, Long> {
     // 도메인을 생성한 셈
 
+    Optional<Transaction> findByTransactionId(String transactionId);
 
 }

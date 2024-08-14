@@ -116,7 +116,7 @@ class AccountServiceTest {
         // user가 없기 때문에 계좌 및 등의 확인이나 captor 저장 필요없음
         // when
         AccountException exception = assertThrows(AccountException.class,
-                () -> accountService.createAccount(1L, 1000L))
+                () -> accountService.createAccount(1L, 1000L));
 
         // then
         assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
