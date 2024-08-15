@@ -68,7 +68,7 @@
         <li>get /account?user_id={userId}</li>
         <li>파라미터 : 사용자 아이디</li>
         <li>정책 : 사용자 없는 경우 실패 응답</li>
-        <li>성공 응답 : List<계좌번호, 잔액> 구조로 응답</li>
+        <li>성공 응답 : List(계좌번호, 잔액) 구조로 응답</li>
       </ul>
     </ul>
     <li>거래 정보</li>
@@ -111,26 +111,36 @@
 <hr>
 <h2> 02. 설계 및 기본 구조 개발 </h2>
 <h3> 패키지 구조 </h3>
- --------------------------------------------------------
-| 향후 구성될 패키지의 모습(일반적으로 많이들 구성하는 구조) |
- --------------------------------------------------------
-<br>
-- aop : AOP로 중복 거래 방지 락을 걸 때 사용될 어노테이션 등을 위치시킴
-- config : redis 관련 설정 및 클라이언트 빈 등록, JPA 관련 설정 등록
-- controller : API의 endpoint를 등록하고, 요청/응답의 형식을 갖는 클래스 패키지
-- domain : jpa entity
-- dto : DTO(Data Transafer Object)를 위치시키는 곳
-* Controller에서 요청/응답에 사용할 클래스
-* 로직 내부에서 데이터 전송에 사용할 클래스
-- exception : 커스텀 Exception, Exception Handler 클래스 패키지
-- repository : Repository(DB에 연결할 때 사용하는 인터페이스)가 위치하는 패키지
-- service : 비즈니스 로직을 담는 서비스 클래스 패키지
-- type : 상태타입, 에러코드, 거래종류 등의 다양한 enum class들의 패키지
+>향후 구성될 패키지의 모습(일반적으로 많이들 구성하는 구조)
+<br><br>
+>>- aop : AOP로 중복 거래 방지 락을 걸 때 사용될 어노테이션 등을 위치시킴
+>>- config : redis 관련 설정 및 클라이언트 빈 등록, JPA 관련 설정 등록
+>>- controller : API의 endpoint를 등록하고, 요청/응답의 형식을 갖는 클래스 패키지
+>>- domain : jpa entity
+>>- dto : DTO(Data Transafer Object)를 위치시키는 곳
+>>* Controller에서 요청/응답에 사용할 클래스
+>>* 로직 내부에서 데이터 전송에 사용할 클래스
+>>- exception : 커스텀 Exception, Exception Handler 클래스 패키지
+>>- repository : Repository(DB에 연결할 때 사용하는 인터페이스)가 위치하는 패키지
+>>- service : 비즈니스 로직을 담는 서비스 클래스 패키지
+>>- type : 상태타입, 에러코드, 거래종류 등의 다양한 enum class들의 패키지
 <br>
 <br>
 <br>
 <hr>
 <h2> 03. 계좌 생성 API </h2>
+<h3>검토한 정보</h3>
+<ul>
+  <li>POST /account</li>
+  <li>파라미터 : 사용자 아이디, 초기 잔액</li>
+  <li>정책 : 사용자가 없는 경우, 계좌가 10개(사용자당 최대 보유 가능 계좌 수)인 경우 실패 응답</li>
+  <li>성공 응답 : 사용자 아이디, 계좌번호, 등록일시</li>
+</ul>
+<br>
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 <br>
 <br>
 <br>
