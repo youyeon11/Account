@@ -2,6 +2,7 @@ package com.example.account.controller;
 
 import com.example.account.domain.Account;
 import com.example.account.dto.AccountDto;
+import com.example.account.dto.CancelBalance;
 import com.example.account.dto.TransactionDto;
 import com.example.account.dto.UseBalance;
 import com.example.account.service.TransactionService;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.account.type.TransactionResultType.S;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +53,7 @@ class TransactionalControllerTest {
                         .transactedAt(LocalDateTime.now())
                         .amount(12345L)
                         .transactionId("transactionId")
-                        .transactionResultType(TransactionResultType.S)
+                        .transactionResultType(S)
                         .build());
 
         // when
@@ -63,6 +65,38 @@ class TransactionalControllerTest {
                                 new UseBalance.Request(1L, "2000000000", 3000L)
                         ))
                 ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountNumber").value("1000000000"))
+                .andExpect(jsonPath("$.transactionResult").value("S"))
+                .andExpect(jsonPath("$.transactionId").value("transactionId"))
+                .andExpect(jsonPath("$.amount").value(12345));
+    }
+
+
+
+    @Test
+    void successCancelBalance() throws Exception {
+        //given
+        given(transactionService.cancelBalance(anyString(), anyString(), anyLong()))
+                .willReturn(TransactionDto.builder()
+                        .accountNumber("1000000000")
+                        .transactedAt(LocalDateTime.now())
+                        .amount(12345L)
+                        .transactionId("transactionId")
+                        .transactionResultType(S)
+                        .build());
+        //when
+        //then
+        mockMvc.perform(post("/transaction/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(
+                        new CancelBalance.Request(
+                                "transactionId",
+                                "2000000000",
+                                3000L
+                        )
+                ))
+        ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountNumber").value("1000000000"))
                 .andExpect(jsonPath("$.transactionResult").value("S"))
