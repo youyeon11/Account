@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AccountDto {
+    // response에 필요한 내용들
     private Long userId;
     private String accountNumber;
     private Long balance;
@@ -19,9 +20,8 @@ public class AccountDto {
     private LocalDateTime unRegisteredAt;
 
 
-    // 특정 type에서 특정 type으로 바꿔줄때..
-    public static AccountDto fromEntity(Account account) { // 굳이 this.userId = ... 이런 방식 사용하지 않아도 됨
-        // 생성자를 사용하지 않고 바로 사용가능한 깔끔방법
+    // Entity를 Dto로 변환해주는 static 메소드를 작성
+    public static AccountDto fromEntity(Account account) {
         return AccountDto.builder() // account에서의 특징들 전부 가져오기 가능
                 .userId(account.getAccountUser().getId())
                 .accountNumber(account.getAccountNumber())

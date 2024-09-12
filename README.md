@@ -137,8 +137,8 @@
   <li>성공 응답 : 사용자 아이디, 계좌번호, 등록일시</li>
 </ul>
 <br>
-| First Header  | Second Header |
-| ------------- | ------------- |
+|  First Header  |  Second Header  |
+| -------------- |  -------------- |
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |
 <br>

@@ -25,7 +25,7 @@ import static com.example.account.type.AccountStatus.IN_USE;
 @RequiredArgsConstructor
 public class AccountService { // AccountService에 서비스에 대한 클래스 생성
     // repository 패키지에 있는 것들 import
-    private final AccountRepository accountRepository; // 생성자를 통해 값을 참조할 때 private final 사용(초기화 가능)
+    private final AccountRepository accountRepository;
     private final AccountUserRepository accountUserRepository;
 
     /*
@@ -39,13 +39,14 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
     public AccountDto createAccount(Long userId, Long initialBalance) {
         AccountUser accountUser = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND)); // 예외 및 오류 처리
-        // 원래 직접 string을 작성해도 되지만, errorcode의 클래스를 이용하기
+
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
-                .orElse("1000000000"); // 예외 시 계좌번호에 대하여 다음과 같이 저장
+                .orElse("1000000000");
 
-        // 예외를 처리한 이후에 저장할 내용들 저장
-        Account account = accountRepository.save( // account에 필요한 정보들 전부 저장
+        /*
+        // 위의 과정을 거친 뒤에 새로운 계좌번호를 다음 정보와 함께 저장
+        Account account = accountRepository.save(
                 Account.builder()
                         .accountUser(accountUser)
                         .accountStatus(IN_USE)
@@ -55,7 +56,19 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
                         .build()
         );
 
+        // Response에 대한 객체 Dto 사용(저장한 Entity 자체를 그대로 주고받는 데에 사용하지 않음)
         return AccountDto.fromEntity(account); // 앞의 account에서의 속성들을 전부 그대로 사용(생성자 대신)
+         */
+
+        return AccountDto.fromEntity(
+                accountRepository.save(Account.builder()
+                        .accountUser(accountUser)
+                        .accountStatus(IN_USE)
+                        .accountNumber(newAccountNumber)
+                        .balance(initialBalance)
+                        .registeredAt(LocalDateTime.now())
+                        .build())
+        );
     }
 
     @Transactional
