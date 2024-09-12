@@ -21,7 +21,7 @@ public class AccountController {
     private final RedisTestService redisTestService;
 
     @PostMapping("/account")
-    public CreateAccount.Response createAccount( // CreateAccount class의 Response 응답에 대한 것으로 저장
+    public CreateAccount.Response createAccount(
             @RequestBody @Valid CreateAccount.Request request // userId와 initialBalance를 요청 인자로 받는 request를 설정
     ) {
         AccountDto accountDto = accountService.createAccount( // 필요한 요청 param들 import

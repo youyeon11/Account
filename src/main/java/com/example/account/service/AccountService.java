@@ -28,7 +28,7 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
     private final AccountRepository accountRepository; // 생성자를 통해 값을 참조할 때 private final 사용(초기화 가능)
     private final AccountUserRepository accountUserRepository;
 
-    /**
+    /*
      * 사용자가 있는지 조회
      * 계좌의 번호를 생성
      * 계좌 저장 하고 정보 넘김
@@ -36,7 +36,7 @@ public class AccountService { // AccountService에 서비스에 대한 클래스
 
 
     @Transactional
-    public AccountDto createAccount(Long userId, Long initialBalance) { // void: return 값 없이 쓰이는 것
+    public AccountDto createAccount(Long userId, Long initialBalance) {
         AccountUser accountUser = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND)); // 예외 및 오류 처리
         // 원래 직접 string을 작성해도 되지만, errorcode의 클래스를 이용하기

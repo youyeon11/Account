@@ -32,15 +32,19 @@ public class Account {
 
     @Enumerated(EnumType.STRING) // 열거형 클래스를 사용하기 위하여 설정한 어노테이션
     private AccountStatus accountStatus;
+
     private Long balance;
 
     private LocalDateTime registeredAt;
+
     private LocalDateTime unRegisteredAt;
 
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
 
     // Account 클래스를 수정하여 메소드를 생성하는 방법 사용(useBalance로 수정)
     public void useBalance(Long amount) {

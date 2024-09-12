@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 // CreatAccount 클래스에는 요청->응답의 형식으로 생성하고, Controller에서 요청하는 형식
 // 이 코드에는 Response로 요청에 응답할 때의 코드들을 작성해주면 됨
-public class CreateAccount { // java class 생성해 controller에서 클래스 사용
+public class CreateAccount {
+    // 계좌 생성에 필요한 요청과 응답을 작성
 
     // 요청
     // 요청 인자 : userId, initialBalance
@@ -20,7 +21,6 @@ public class CreateAccount { // java class 생성해 controller에서 클래스 
         @Min(1)
         private Long userId;
 
-        // annotaion을 통하여 데이터 칼럼에 대한 기본적인 설정 완료
         @NotNull
         @Min(0)
         private Long initialBalance;
